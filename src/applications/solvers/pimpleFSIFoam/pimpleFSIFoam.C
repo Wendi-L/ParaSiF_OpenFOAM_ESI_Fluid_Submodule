@@ -113,6 +113,7 @@ Note
 #include "fvcSmooth.H"
 #include "mui.h"
 #include "mui_config.h"
+#include "UPstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -138,6 +139,23 @@ int main(int argc, char *argv[])
     #include "createUfIfPresent.H"
     #include "CourantNo.H"
     #include "setInitialDeltaT.H"
+
+    MPI_Comm mpiComm =
+        reinterpret_cast<MPI_Comm>(
+            const_cast<void*>(
+                Foam::UPstream::Communicator::lookup(
+                    Foam::UPstream::commWorld()
+                ).pointer()
+            )
+        );
+
+    int rank, size;
+    MPI_Comm_rank(mpiComm, &rank);
+    MPI_Comm_size(mpiComm, &size);
+
+    Foam::Pout << "MPI rank " << rank
+               << " of " << size
+               << Foam::endl;
 
     #include "pushForceInit.H"
     #include "fetchDisplacementInit.H"
