@@ -158,19 +158,6 @@
         }
     }
 
-    // create on the stack
-    mui::algo_aitken<mui::mui_config> aitken_x(static_cast<double>(initUndRelxCpl), 1.0);
-    mui::algo_aitken<mui::mui_config> aitken_y(static_cast<double>(initUndRelxCpl), 1.0);
-    mui::algo_aitken<mui::mui_config> aitken_z(static_cast<double>(initUndRelxCpl), 1.0);
-
-    mui::algo_fixed_relaxation<mui::mui_config> fr_x(static_cast<double>(initUndRelxCpl));
-    mui::algo_fixed_relaxation<mui::mui_config> fr_y(static_cast<double>(initUndRelxCpl));
-    mui::algo_fixed_relaxation<mui::mui_config> fr_z(static_cast<double>(initUndRelxCpl));
-
-    // define spatial and temporal samplers
-    mui::sampler_pseudo_n2_linear<mui::mui_config> spatial_sampler(rSampler);
-    mui::temporal_sampler_exact<mui::mui_config> chrono_sampler;
-
     std::vector<std::pair<mui::point3d, double>> ptsVluInit;
     mui::point3d rcv_point;
     int count=0;
@@ -196,6 +183,19 @@
             }
         }
     }
+
+    // create on the stack
+    mui::algo_aitken<mui::mui_config> aitken_x(static_cast<double>(initUndRelxCpl), 1.0, MPI_COMM_NULL, ptsVluInit);
+    mui::algo_aitken<mui::mui_config> aitken_y(static_cast<double>(initUndRelxCpl), 1.0, MPI_COMM_NULL, ptsVluInit);
+    mui::algo_aitken<mui::mui_config> aitken_z(static_cast<double>(initUndRelxCpl), 1.0, MPI_COMM_NULL, ptsVluInit);
+
+    mui::algo_fixed_relaxation<mui::mui_config> fr_x(static_cast<double>(initUndRelxCpl), MPI_COMM_NULL, ptsVluInit);
+    mui::algo_fixed_relaxation<mui::mui_config> fr_y(static_cast<double>(initUndRelxCpl), MPI_COMM_NULL, ptsVluInit);
+    mui::algo_fixed_relaxation<mui::mui_config> fr_z(static_cast<double>(initUndRelxCpl), MPI_COMM_NULL, ptsVluInit);
+
+    // define spatial and temporal samplers
+    mui::sampler_pseudo_n2_linear<mui::mui_config> spatial_sampler(rSampler);
+    mui::temporal_sampler_exact<mui::mui_config> chrono_sampler;
 
     int totPointSize = 0;
 
